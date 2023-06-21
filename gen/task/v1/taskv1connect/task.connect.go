@@ -35,11 +35,14 @@ const (
 const (
 	// TaskServiceListTasksProcedure is the fully-qualified name of the TaskService's ListTasks RPC.
 	TaskServiceListTasksProcedure = "/task.v1.TaskService/ListTasks"
+	// TaskServiceCreateTaskProcedure is the fully-qualified name of the TaskService's CreateTask RPC.
+	TaskServiceCreateTaskProcedure = "/task.v1.TaskService/CreateTask"
 )
 
 // TaskServiceClient is a client for the task.v1.TaskService service.
 type TaskServiceClient interface {
 	ListTasks(context.Context, *connect_go.Request[v1.ListTasksRequest]) (*connect_go.Response[v1.ListTasksResponse], error)
+	CreateTask(context.Context, *connect_go.Request[v1.CreateTaskRequest]) (*connect_go.Response[v1.CreateTaskResponse], error)
 }
 
 // NewTaskServiceClient constructs a client for the task.v1.TaskService service. By default, it uses
@@ -57,12 +60,18 @@ func NewTaskServiceClient(httpClient connect_go.HTTPClient, baseURL string, opts
 			baseURL+TaskServiceListTasksProcedure,
 			opts...,
 		),
+		createTask: connect_go.NewClient[v1.CreateTaskRequest, v1.CreateTaskResponse](
+			httpClient,
+			baseURL+TaskServiceCreateTaskProcedure,
+			opts...,
+		),
 	}
 }
 
 // taskServiceClient implements TaskServiceClient.
 type taskServiceClient struct {
-	listTasks *connect_go.Client[v1.ListTasksRequest, v1.ListTasksResponse]
+	listTasks  *connect_go.Client[v1.ListTasksRequest, v1.ListTasksResponse]
+	createTask *connect_go.Client[v1.CreateTaskRequest, v1.CreateTaskResponse]
 }
 
 // ListTasks calls task.v1.TaskService.ListTasks.
@@ -70,9 +79,15 @@ func (c *taskServiceClient) ListTasks(ctx context.Context, req *connect_go.Reque
 	return c.listTasks.CallUnary(ctx, req)
 }
 
+// CreateTask calls task.v1.TaskService.CreateTask.
+func (c *taskServiceClient) CreateTask(ctx context.Context, req *connect_go.Request[v1.CreateTaskRequest]) (*connect_go.Response[v1.CreateTaskResponse], error) {
+	return c.createTask.CallUnary(ctx, req)
+}
+
 // TaskServiceHandler is an implementation of the task.v1.TaskService service.
 type TaskServiceHandler interface {
 	ListTasks(context.Context, *connect_go.Request[v1.ListTasksRequest]) (*connect_go.Response[v1.ListTasksResponse], error)
+	CreateTask(context.Context, *connect_go.Request[v1.CreateTaskRequest]) (*connect_go.Response[v1.CreateTaskResponse], error)
 }
 
 // NewTaskServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -87,6 +102,11 @@ func NewTaskServiceHandler(svc TaskServiceHandler, opts ...connect_go.HandlerOpt
 		svc.ListTasks,
 		opts...,
 	))
+	mux.Handle(TaskServiceCreateTaskProcedure, connect_go.NewUnaryHandler(
+		TaskServiceCreateTaskProcedure,
+		svc.CreateTask,
+		opts...,
+	))
 	return "/task.v1.TaskService/", mux
 }
 
@@ -95,4 +115,8 @@ type UnimplementedTaskServiceHandler struct{}
 
 func (UnimplementedTaskServiceHandler) ListTasks(context.Context, *connect_go.Request[v1.ListTasksRequest]) (*connect_go.Response[v1.ListTasksResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("task.v1.TaskService.ListTasks is not implemented"))
+}
+
+func (UnimplementedTaskServiceHandler) CreateTask(context.Context, *connect_go.Request[v1.CreateTaskRequest]) (*connect_go.Response[v1.CreateTaskResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("task.v1.TaskService.CreateTask is not implemented"))
 }

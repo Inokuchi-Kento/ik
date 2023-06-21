@@ -6,6 +6,7 @@ require (
 	entgo.io/ent v0.12.3
 	github.com/bufbuild/connect-go v1.8.0
 	github.com/caarlos0/env/v6 v6.10.1
+	github.com/go-chi/chi/v5 v5.0.8
 	github.com/lib/pq v1.10.9
 	golang.org/x/net v0.11.0
 	google.golang.org/protobuf v1.30.0

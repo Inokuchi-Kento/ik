@@ -4,6 +4,12 @@ package task.v1;
 
 option go_package = "blrpc/gen/task/v1;taskv1";
 
+
+service TaskService {
+    rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {}
+    rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse) {}
+}
+
 message ListTasksRequest {
     string title = 1;
 }
@@ -17,6 +23,11 @@ message ListTasksResponse {
     repeated Task tasks = 1;
 }
 
-service TaskService {
-    rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {}
+message CreateTaskRequest {
+    string title = 1;
+    string detail = 2;
+}
+
+message CreateTaskResponse {
+    string creating = 1;
 }

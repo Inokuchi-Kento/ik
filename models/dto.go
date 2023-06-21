@@ -1,5 +1,16 @@
 package models
 
+type Taskrequest struct {
+	ID     int    `json:"task_id"`
+	Title  string `json:"title"`
+	Detail string `json:"detail"`
+}
+
 type TaskResponse struct {
-	Tasks []Task `json:"tasks"`
+	ID     int    `json:"task_id"`
+	Title  string `json:"title"`
+	Detail string `json:"detail"`
+}
+type TasksResponse struct {
+	Tasks []TaskResponse `json:"tasks"`
 }
