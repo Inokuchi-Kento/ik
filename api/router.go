@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func NewHttpRouter(client *ent.Client) *chi.Mux {
@@ -15,6 +16,8 @@ func NewHttpRouter(client *ent.Client) *chi.Mux {
 	sCon := controllers.NewTaskController(ser)
 
 	hr := chi.NewRouter()
+
+	hr.Use(middleware.Logger)
 
 	hr.Route("/task", func(hr chi.Router) {
 		hr.Get("/", sCon.HttpTaskListHandler)
