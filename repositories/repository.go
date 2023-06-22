@@ -17,7 +17,6 @@ var (
 )
 
 func OpenDB(ctx context.Context, cfg *config.Config) *ent.Client {
-	log.Printf("DB_config: %v", cfg)
 	client, err = ent.Open("postgres", fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
 		cfg.DBHost, cfg.DBUser, cfg.DBPassword, cfg.DBName, cfg.DBPort,

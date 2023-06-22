@@ -1,6 +1,7 @@
 package api
 
 import (
+	"blrpc/api/interceptor"
 	"blrpc/controllers"
 	"blrpc/ent"
 	"blrpc/services"
@@ -8,7 +9,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 )
 
 func NewHttpRouter(client *ent.Client) *chi.Mux {
@@ -17,7 +17,8 @@ func NewHttpRouter(client *ent.Client) *chi.Mux {
 
 	hr := chi.NewRouter()
 
-	hr.Use(middleware.Logger)
+	hr.Use(interceptor.LoggingInterCeptor)
+	hr.Use(interceptor.JsonResponseMiddleware)
 
 	hr.Route("/task", func(hr chi.Router) {
 		hr.Get("/", sCon.HttpTaskListHandler)
@@ -35,7 +36,7 @@ func NewGrpcRouter(client *ent.Client) *http.ServeMux {
 	path, handler := tc.TaskListHandler()
 
 	gr := http.NewServeMux()
-	gr.Handle(path, handler)
+	gr.Handle(path, interceptor.LoggingInterCeptor(handler))
 
 	return gr
 }

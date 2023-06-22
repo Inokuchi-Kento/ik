@@ -22,3 +22,25 @@ func InsertTask(ctx context.Context, task models.Task) error {
 	}
 	return nil
 }
+
+func UpdateTask(ctx context.Context, title string, newtask models.Task) error {
+	_, err := client.Task.
+		Update().
+		Where(task.Title(title)).
+		SetTitle(newtask.Title).
+		SetDetail(newtask.Detail).
+		Save(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func DeleteTask(ctx context.Context, title string) error {
+	_, err := client.Task.Delete().Where(task.Title(title)).Exec(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
